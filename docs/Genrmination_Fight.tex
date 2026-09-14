@@ -1,0 +1,70 @@
+\documentclass[10pt,a4paper,oneside,openany]{book}
+\usepackage[margin=22mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}[Scale=0.88]
+\usepackage{microtype}
+\usepackage{xcolor,graphicx,longtable,booktabs,array,fvextra,enumitem,fancyhdr,tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage[unicode,colorlinks=true,linkcolor=teal,urlcolor=teal,bookmarksnumbered=true]{hyperref}
+\usepackage{bookmark}
+\pdfstringdefDisableCommands{\def\allowbreak{}}
+\definecolor{ink}{HTML}{16313A}
+\definecolor{teal}{HTML}{147B74}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+\setlist{nosep,leftmargin=*}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{4pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily Genrmination\_Fight}
+\fancyhead[R]{\small\sffamily Design and engineering record}
+\fancyfoot[L]{\scriptsize Snapshot: 14 September 2026}
+\fancyfoot[R]{\thepage}
+\hypersetup{pdftitle={Genrmination_Fight: Design, Engineering and Complete Source},pdfauthor={Prepared by Codex for the project owner},pdfsubject={Evidence-based game design document and technical annex}}
+\setcounter{tocdepth}{1}
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\color{ink}\sffamily
+\vspace*{16mm}
+{\large ROBLOX EXPERIENCE DOCUMENTATION\par}
+\vspace{12mm}
+{\fontsize{34}{39}\selectfont\bfseries Genrmination\_Fight\par}
+\vspace{7mm}
+{\LARGE Design, engineering, and complete source\par}
+\vspace{15mm}
+\rule{\textwidth}{1pt}
+\vspace{7mm}
+{\large From the supplied design template, development conversations, latest export, and live Studio source.\par}
+\vspace{10mm}
+{\large 21 active sources\quad 8 archived sources\quad 13 photographs\par}
+{\large 1 disabled generator\quad 12 historical workspace artifacts\par}
+\vfill
+{\large Snapshot edition: 14 September 2026\par}
+{\normalsize Place 137098589879404 / version 77 baseline + Revision 5 repairs\par}
+\vspace{5mm}
+{\small Includes open defects, historical test limits, future implementation recipes, and full line-numbered code. Live repairs and embedded engineering comments included. Revision 5 reverses the Revision 4 geometry migration, rebuilds carrier navigation on the live map, and replaces the passive opposition with a hostile ambush. Not published.\par}
+\end{titlepage}
+\tableofcontents
+\mainmatter
+\part{Game design and engineering record}
+\input{chapters/gameplay-survey.tex}
+\input{chapters/revision-5.tex}
+\input{chapters/design-and-engineering.tex}
+\input{chapters/architecture-diagrams.tex}
+\input{chapters/scenarios.tex}
+\input{chapters/defects.tex}
+\input{chapters/verification-ledger.tex}
+\input{chapters/future-updates.tex}
+\input{chapters/inventory.tex}
+\input{chapters/provenance.tex}
+\input{chapters/symbol-index.tex}
+\input{chapters/visuals.tex}
+\input{chapters/bibliography.tex}
+\input{chapters/full-code.tex}
+\end{document}

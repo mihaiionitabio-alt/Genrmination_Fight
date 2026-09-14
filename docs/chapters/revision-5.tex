@@ -1,0 +1,346 @@
+\chapter{Revision 5: coordinate repair, navigation, and the hostile ambush}
+
+\section{Summary}
+Revision 5 began as a correction to Revision 4 and became a rebuild of three
+subsystems.\ It reverses a geometry migration that had been applied to the wrong
+object, closes a fall-through hazard in the basement, replaces the research
+carrier's hardcoded route table with navigation derived from the live map,
+reduces the ten selectable scenarios to two role-bound assignments, and adds a
+hostile ambush system in place of the previous passive opposition.\
+
+All work in this chapter was applied to the live place through the Studio
+bridge and verified by numeric scene queries and instrumented play sessions
+rather than by observation alone.\
+
+\section{The coordinate fault and its repair}
+
+\subsection{Diagnosis}
+Revision 4 concluded that \texttt{Laboratory\_Complex} had shifted and that the
+lounge should be moved to follow it.\ It inferred the displacement
+$(-25.142857,\ -23.25,\ +91.285714)$ studs and applied it to
+\texttt{Workspace.Lounge} and \texttt{Workspace.LoungeHatch}, a total of 169
+parts.\
+
+The vector was correct.\ The object was not.\ Ground truth was recovered from
+\texttt{D:\textbackslash game\textbackslash 4\textbackslash Export.gltf},
+exported on 11 September 2026, which stores the authored node translations:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Node} & \textbf{Authored} & \textbf{Live before repair} \\
+\midrule
+\texttt{Laboratory\_Complex/Roof\_1} & 82.2857,\ 129.375,\ 133.7143 & 57.1429,\ 106.125,\ 225.0000 \\
+\texttt{LoungeHatch} & 110,\ $-15.9$,\ 130 & 84.857,\ $-39.150$,\ 221.286 \\
+\texttt{HatchRim} & 110,\ $-16$,\ 130 & 110,\ $-16$,\ 130 \\
+\texttt{Lounge/Floor} & 80,\ $-49$,\ 130 & 80,\ $-72.25$,\ 221.286 \\
+\texttt{LabSpawn} & 32.143,\ 1,\ 11.571 & 32.143,\ $-0.1$,\ 11.571 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\texttt{HatchRim}, the three spawn markers and
+\texttt{LaboratoryFoundationGround} had not moved.\ Only the laboratory had.\
+Because the ground plane remained at $y=-8$ while the first floor sank to
+$-23.25$, the ground plane sat 15.25 studs above the first floor and intersected
+Levels 1 and 2.\ That is the reported gap in the building and the exterior.\
+
+Revision 4's partial migration made the fault worse: the lounge followed the
+displaced building while the hatch's own rim did not, leaving a hatch and its
+rim 95 studs apart.\
+
+A further confirmation is available in Revision 4's own code.\ The constant
+\texttt{BASE\_ROOF} in \texttt{LabSpatial} is
+\texttt{CFrame.new(82.28571428571429,\ 129.375,\ 133.71428571428572)}, which is
+exactly the authored roof position.\ The frame that module composed was
+therefore identity with respect to the authored datum, not with respect to the
+displaced one.\
+
+\subsection{Repair and verification}
+Two rigid moves were applied, each guarded before execution:
+
+\begin{enumerate}
+\item \texttt{Lounge} and \texttt{LoungeHatch}, 169 parts, by
+      $(+25.142857,\ +23.25,\ -91.285714)$.\ The move was performed only
+      because the inverse placed \texttt{LoungeHatch} within 0.1 studs of
+      \texttt{HatchRim}; otherwise the operation refused and changed nothing.\
+\item \texttt{Laboratory\_Complex}, by the delta that returns \texttt{Roof\_1}
+      to its exported position, as a single \texttt{PivotTo}.\
+\end{enumerate}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Check} & \textbf{Result after repair} \\
+\midrule
+\texttt{Roof\_1} & 82.2857,\ 129.375,\ 133.7143, the exported value \\
+Level\_1 slab top & 0.000 \\
+Basement slab top & $-16.250$ \\
+Ground plane & $-8.000$, correctly between the two \\
+Research stations on a real slab & 67 of 67, none in mid-air \\
+Laboratory spawns & all three resting on \texttt{FloorSlab\_1} \\
+Building parts inside the lounge volume & 1963 $\rightarrow$ \textbf{0} \\
+Part counts & 61513 / 168 / 4 / $1\times6$, unchanged \\
+\texttt{LabSpatial.frame()} translation & \textbf{0.0000} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The final row is the operative one.\ With the map restored to its authored
+datum, Revision 4's entire coordinate layer evaluates to identity and is inert.\
+It was therefore removed rather than unpicked:
+\texttt{ReplicatedStorage.LabSpatial} was moved to
+\texttt{ServerStorage.LabSpatial\_RETIRED\_revision4}, and all thirty
+\texttt{Spatial.*} call sites were reverted by rebuilding the affected scripts
+from the pre-Revision-4 baseline.\
+
+\subsection{Correction to the Revision 4 record}
+The Revision 4 entry in \texttt{ServerStorage.GameDocumentation} states ``The
+building itself was not moved back'' and ``Do not move the lounge twice''.\ Both
+are now false and both would mislead a later reader.\ A correction notice was
+prepended to that module, and the \texttt{LabFrameAligned} marker on
+\texttt{Workspace.Lounge} was cleared.\
+
+\section{Basement stair-tower void}
+Both stair towers sit outside the basement slab: \texttt{StairTower\_North} at
+$z=-6.4$ and \texttt{StairTower\_South} at $z=273.9$, while
+\texttt{BasementSlab} spans $z=0$ to $267.4$.\ Each \texttt{Landing\_L-1} was
+therefore a plate 0.75 studs thick with nothing beneath it, and a player
+stepping off its edge fell into the void.\ This is the blue area reported at the
+foot of the basement stairs; the colour is the skybox seen through the gap.\
+
+A \texttt{TowerBaseSlab} was added under each tower at the basement datum,
+matching the basement slab's material and colour.\ A sweep of 6073 sample
+points across the basement floor and both tower footprints subsequently found
+zero unsupported points, and every edge of both basement landings resolves onto
+either \texttt{TowerBaseSlab} or \texttt{BasementSlab}.\
+
+\section{Carrier navigation and physical movement}
+
+\subsection{The fault}
+The research carrier walked through walls, equipment and floors.\ The cause was
+structural rather than incidental.\ \texttt{routePoints} returned a hardcoded
+polyline: corridor lane $x=78$, stair lane $x=68.7857$, tower mouth $z=-6$, and
+per-tread offsets of the form $-15.267857-(i-1)\times 4.821428$.\ The walk loop
+then advanced the rig with \texttt{PivotTo}, testing only for player proximity
+so as not to shove them.\ No test of geometry existed anywhere in the path, so
+walls were not merely passable, they were absent from the model.\
+
+\subsection{GWAPNavigation}
+Routing was replaced by \texttt{ReplicatedStorage.GWAPNavigation}, which reads
+the map as it exists at the moment of the request.\ Levels come from the actual
+\texttt{FloorSlab} and \texttt{BasementSlab} parts; flights come from the named
+tread parts inside each \texttt{StairTower}; and the approach point for a
+station is recomputed from that station's live bounds, filtered by a ground
+test, a line-of-sight test and a body-box clearance test.\ No coordinate is
+stored, so relocated equipment and re-packed rooms cannot strand a carrier.\
+
+The walk loop was made physical.\ Because the rig is anchored and driven by
+\texttt{PivotTo}, which bypasses the physics solver, each step is swept against
+the world by hand: a blocked step is never applied, and an applied step is
+followed onto the surface beneath it so the carrier can neither sink through a
+floor nor walk on air.\ A persistent obstruction recomputes the route rather
+than waiting out the mission clock.\
+
+\subsection{Defects found during integration}
+Four faults were introduced or exposed while wiring this in, and are recorded
+because each is a general trap rather than a local slip.\
+
+\begin{enumerate}
+\item \textbf{Ground follow fought a deliberate climb.}\ A waypoint 0.82 studs
+      directly above the carrier, with zero horizontal component, could never be
+      reached: the surface snap reset the height on every frame.\ The loop span
+      indefinitely with no error and no message.\ The snap now applies only when
+      the step carries horizontal travel.\
+\item \textbf{Degenerate waypoints.}\ Two landing points measured against
+      different surfaces produced purely vertical hops, which are unreachable
+      for a walker.\ \texttt{GWAPNavigation} folds them into the following
+      point.\
+\item \textbf{Unbounded waypoint wait.}\ A single unreachable waypoint could
+      hold a mission indefinitely.\ A per-waypoint deadline now abandons it, and
+      three consecutive failures recompute the route.\
+\item \textbf{Sticky target bypassed the reachability test.}\ Once
+      \texttt{a.target} was set, the first branch of the selection expression
+      returned it without consulting the reachability predicate, so an
+      unreachable station was proposed forever.\
+\end{enumerate}
+
+\subsection{Measured result}
+A full instrumented run, sampled every 70 milliseconds:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Distance walked & approximately 1190 studs, basement to roof \\
+Wall penetrations & \textbf{0} \\
+Airborne frames & \textbf{0} \\
+Automatic reroutes & 2, around unreachable equipment \\
+Mission stages completed & 4 of 4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Role-bound assignments}
+The ten selectable scenarios were replaced by two, one per role, each a
+six-stop run spanning basement, intermediate floors and the rooftop greenhouse:
+
+\begin{center}
+\begin{tabular}{@{}p{0.28\textwidth}p{0.62\textwidth}@{}}
+\toprule
+\textbf{Assignment} & \textbf{Route} \\
+\midrule
+Germination integrity chain & Seed bank, Incubator, Clinostat, Orientation scanner, Vitality scanner, rooftop plot \\
+Cold-chain contamination audit & Cryo-freezer, Wet lab, Symbiosis incubator, Chemical seedlings, Porometer, rooftop plot \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every stop is a station capability with three instances in the map, one original
+and two backups, so a destroyed or unreachable stop reroutes to an equivalent
+rather than stalling the run.\
+
+Selection was removed entirely.\ Setting \texttt{LabRole} assigns one of the two
+immediately; the HUD's job button, scenario menu, list and random-assignment
+control were deleted; and the server now refuses a \texttt{choose} action
+arriving from a client, since after this change it can only be a stale HUD or a
+crafted packet.\ Because nothing can be chosen, \texttt{finish()} issues the
+next assignment eight seconds after a mission ends.\
+
+\section{Hostile ambush system}
+The previous opposition fired once every 2.5 seconds, only when a single player
+was present, and then applied a random spread of $\pm2.5$ studs, so it usually
+missed and never left its room.\ It was replaced.\
+
+\begin{center}
+\begin{tabular}{@{}p{0.30\textwidth}p{0.60\textwidth}@{}}
+\toprule
+\textbf{Behaviour} & \textbf{Mechanism} \\
+\midrule
+Emerge from rooms & rooms within 58 studs release up to two workers; the door is held open for nine seconds through a \texttt{ForceOpen} attribute honoured by \texttt{bindAutoDoor} \\
+Stairs and greenhouse & pursuit is position-based rather than room-based, so workers follow onto the towers and the roof \\
+Accurate fire & a single ray to the target with no spread \\
+Hazards & a proportion of shots target a gas pipe or a live machine beside the player \\
+Greenhouse glass & a shot blocked by greenhouse glass shatters it, clearing the line for the next \\
+Carrier as target & half of each ambush is assigned to the carrier when it wakes \\
+Bounded cost & a hard roster cap, replenished from later rooms as workers are put down \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Interaction with the patrol system}
+Hostile workers initially did not move at all.\ The existing patrol logic in
+\texttt{LabEquipment} was calling \texttt{PivotTo} on the same rigs; two systems
+driving one rig cancel each other out.\ The patrol now yields for as long as
+\texttt{GWAPHostile} is set.\ A second cause followed: a three-direction wall
+slide could not negotiate a laboratory dense with benches, and the sweep was
+correctly refusing to pass through an incubator.\ Steering was widened to eight
+headings with a real path solve when a worker is stuck, throttled to at most one
+solve per second across the whole roster.\ Seated desk staff are excluded, since
+they have no walking pose.\
+
+\section{Damage model corrections}
+
+\subsection{Fractional damage}
+The rate limiter returned a fraction of the requested damage.\ With several
+shooters sharing one budget, each landed shot was scaled to roughly half a
+point, so a hit did not read as a hit.\ The limiter now governs how often a
+shot may hurt, never how much: a shot either lands for its full value or is
+spent as a near miss.\
+
+A constraint follows from this and is recorded because it is not obvious: under
+all-or-nothing accounting the cap must be at least the size of one hit, or no
+shot can ever afford to land.\ One hit per second is therefore the fastest
+possible cadence, and survival time is set by hit size rather than by the cap.\
+
+\subsection{Universal one-shot kill}
+Every weapon killed a full-health worker in a single shot.\ The cause was not a
+damage value.\ It was the line
+
+\begin{center}
+\texttt{tool:SetAttribute("BlasterInstantHeadshot", style.pcOnly == true)}
+\end{center}
+
+Each of the three player weapons sets \texttt{pcOnly = true}, so instant-headshot
+was enabled on all of them.\ Whenever a ray cleared the worker's collision hull
+and caught the head, the shot killed outright regardless of the weapon.\
+Reducing the shotgun's pellet damage in an earlier pass could not address this,
+because the lethality never came from the damage figure.\
+
+A head shot now doubles damage instead of ending the engagement, in both firing
+paths.\ This closes every thousand-damage route through a gun; the remaining
+thousand-damage calls are the equipment and gas-pipe explosions, which are
+intended to be lethal.\ Verified through the live \texttt{BlasterHitBridge}
+against a full-health worker:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Weapon} & \textbf{Damage} & \textbf{Shots to kill} \\
+\midrule
+Lab Sidearm & 34 & 3 \\
+Lab Shotgun & $6\times12$ & 2 \\
+Lab Rifle & 55 & 2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The bridge itself was never at fault.\ An isolated invocation carrying 34 damage
+took a worker from 100 to exactly 66, which is the measurement that eliminated
+\texttt{damageWorkerBot} and the weapon table and identified the tool attribute.\
+
+\subsection{Standoff}
+Workers closed to six studs and formed a press the player could not aim through.
+They now hold a firing line: a worker closes only to \texttt{STANDOFF}, gives
+ground if it ends up inside \texttt{STANDOFF\_MIN}, and applies a separation
+push away from every other hostile within \texttt{SPACING} on every tick.\
+Applying separation only once a worker had stopped, which was the first attempt,
+left those still closing to pile into those that had halted.\
+
+A wider line of 24 and 17 studs was tried first and held the workers so far back
+that corridor equipment broke line of sight and nothing landed at all across 28
+seconds of observation.\ The values below keep clear room to aim while leaving
+the workers in sight of the player.\
+
+\section{Constants reference}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Constant} & \textbf{Value} & \textbf{Meaning} \\
+\midrule
+\texttt{HOSTILE\_CAP} & 5 & armed workers active at once \\
+\texttt{PER\_ROOM} & 2 & released from any one room \\
+\texttt{RELEASE\_RADIUS} & 58 & distance at which a room wakes \\
+\texttt{SHOT\_INTERVAL} & 10 s & one shot per worker \\
+\texttt{HOSTILE\_DAMAGE} & 0.5 & absolute health points per landed hit \\
+\texttt{INCOMING\_CAP} & 5 & combined limit, above hit size so all shots land \\
+\texttt{CARRIER\_DAMAGE} & 4 & per landed hit on the carrier \\
+\texttt{CARRIER\_INCOMING\_CAP} & 4 & one hit per second, roughly 25 s unaided \\
+\texttt{CARRIER\_HUNTER\_SHARE} & 0.5 & fraction of an ambush assigned to the carrier \\
+\texttt{HAZARD\_CHANCE} & 0.08 & odds a shot targets a pipe or machine \\
+\texttt{STANDOFF} & 20 & distance held from the target \\
+\texttt{STANDOFF\_MIN} & 15 & closer than this, the worker gives ground \\
+\texttt{SPACING} & 9 & minimum separation between hostiles \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Measured with these values: recorded hit sizes of 0.5 throughout, 15 hits across
+35 seconds from four to five workers, player health 100 to 94.5, closest
+approach 13 studs, typical engagement distance 44 studs, no script errors.\
+
+\section{Open items}
+\begin{enumerate}
+\item \textbf{Nine unroutable stations.}\ Nine of the 67 research stations have
+      no walkable approach route.\ All are originals positioned at $x=67$, hard
+      against the corridor's western wall.\ Missions reroute to backups
+      automatically, so play is unaffected, but those nine are decoration until
+      they are moved clear of the wall.\
+\item \textbf{Cause of the original displacement is unknown.}\ If a generator
+      rebuild writes the laboratory at a different origin, the fault recurs.\
+      Before any full regeneration, \texttt{Roof\_1} should be checked against
+      $(82.2857,\ 129.375,\ 133.7143)$.\
+\item \textbf{Two runtime copies.}\ The weapon table and several helpers exist
+      both in the installed scripts and in the generator's embedded payload.\
+      The corrections in this chapter were applied to the installed scripts; a
+      full regeneration would restore the previous values.\
+\end{enumerate}

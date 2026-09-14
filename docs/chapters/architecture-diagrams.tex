@@ -1,0 +1,47 @@
+\chapter{Architecture and coordinate diagrams}
+\section{Runtime responsibilities}
+\begin{center}
+\begin{tikzpicture}[node distance=8mm,box/.style={draw=teal,rounded corners,align=center,text width=45mm,minimum height=16mm,font=\small},arr/.style={-{Stealth},thick,draw=teal}]
+\node[box] (client) {Client input and display\\BlasterController, LabHUD\\LabQuizClient};
+\node[box,right=12mm of client] (server) {Authoritative server\\ServerBlasterManager\\GWAPServer, LabEquipment};
+\node[box,below=18mm of server] (state) {Server-owned state\\assignments, samples\\points, damage, rounds};
+\node[box,below=18mm of client] (world) {World and navigation\\GWAPWorld, GWAPRouting\\stations, stairs, fixtures};
+\draw[arr] (client.east) -- node[above,font=\scriptsize]{requests} (server.west);
+\draw[arr] (server.south) -- (state.north);
+\draw[arr] (world.east) -- node[above,font=\scriptsize]{geometry/state} (state.west);
+\draw[arr] (state.south) -- ++(0,-8mm) -| node[pos=.7,below,font=\scriptsize]{replicated attributes and presentation} (client.west);
+\end{tikzpicture}
+\end{center}
+Requests do not directly authorize rewards or damage. The server validates and commits gameplay state. The client displays that state and predicts visual aiming feedback. The world supplies geometry and station metadata; the current coordinate defect shows why those two must remain consistent.
+
+\section{Observed origin mismatch: Incubator example}
+\begin{center}
+\begin{tikzpicture}[x=.08cm,y=.055cm,>=Stealth,font=\small]
+\draw[->] (15,25) -- (108,25) node[right]{world X};
+\draw[->] (15,25) -- (15,162) node[above]{world Z};
+\fill[teal] (67,49) circle[radius=2pt] node[below left,align=right]{builder station\\(67,49)};
+\fill[blue] (78,49) circle[radius=2pt] node[right,align=left]{stored approach\\(78,49)};
+\fill[red!70!black] (41.857,140.286) circle[radius=2pt] node[left,align=right]{actual station\\(41.86,140.29)};
+\draw[->,thick,red!70!black] (67,49) -- node[left,sloped,font=\scriptsize]{observed translation} (41.857,140.286);
+\draw[dashed,blue] (78,49) -- (41.857,140.286);
+\end{tikzpicture}
+\end{center}
+This plan view omits height for clarity. The station's actual Y is -21.75, while its builder Y is 1.5 and its stored approach Y is 3.25. Geometry translation does not automatically transform Vector3 attributes or literal coordinates in code. The dashed line illustrates the disagreement; it is not a proposed valid path.
+
+\section{Proposed mission transition contract}
+\begin{center}
+\begin{tikzpicture}[node distance=8mm,box/.style={draw=teal,rounded corners,align=center,text width=31mm,minimum height=12mm,font=\small},arr/.style={-{Stealth},thick}]
+\node[box] (choose) {Choose job\\paused};
+\node[box,right=8mm of choose] (resolve) {Ready / resolve\\healthy target};
+\node[box,right=8mm of resolve] (travel) {Travel and\\process};
+\node[box,below=13mm of travel] (commit) {Commit checkpoint\\or final planting};
+\node[box,below=13mm of resolve] (wait) {Wait / replan\\same stage};
+\draw[arr] (choose) -- (resolve);
+\draw[arr] (resolve) -- (travel);
+\draw[arr] (travel) -- (commit);
+\draw[arr] (travel.south west) -- node[above,sloped,font=\scriptsize]{destroyed / blocked} (wait.north east);
+\draw[arr] (wait) -- (resolve);
+\draw[arr] (commit.south) -- ++(0,-7mm) -| node[pos=.7,below,font=\scriptsize]{next stage} (resolve.west);
+\end{tikzpicture}
+\end{center}
+The current code implements destruction rerouting and pause behavior. General blocked-edge replanning remains proposed. Every asynchronous operation should carry the assignment/route revision so a stale operation cannot commit after regroup, termination, or a new target selection.

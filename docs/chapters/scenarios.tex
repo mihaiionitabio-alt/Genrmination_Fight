@@ -1,0 +1,183 @@
+\chapter{Ten research scenarios: protocols and extension specifications}
+All ten scenarios below are implemented as ordered gameplay routes and a randomized integer variant.\allowbreak{} The proposed data product and validation paragraphs are future design, not implemented science.\allowbreak{} Floor labels describe logical floors in the original building frame.\allowbreak{} The initial coordinate discrepancy was repaired in Revision 4; see its fresh verification results and remaining coverage limits.\allowbreak{}
+
+\section{01.\allowbreak{} Germination viability}
+\subsection{Implemented route and parameter}
+Seed bank (B1) -> Incubator (L1) -> Plot 1 (roof)
+
+Moisture, integer 35-80 percent
+
+A seedling is collected, incubated, and planted.\allowbreak{} Moisture is a displayed assignment variant; it does not drive a germination probability model.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Annotate germinated versus non-germinated seeds in authentic, protocol-controlled images.\allowbreak{} Store image ID, seed count, germination count, moisture condition, replicate, and observer decision.\allowbreak{}
+
+Use known examples and repeated independent counts; compare agreement before interpreting treatment differences.\allowbreak{} Preserve the original image and sampling method.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Try both endpoints of the moisture range; destroy the Incubator before arrival and during processing.\allowbreak{} Verify an equivalent is selected and the nominal two-checkpoint plus final reward is not duplicated.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{02.\allowbreak{} Pathogen resistance}
+\subsection{Implemented route and parameter}
+Containment (L2) -> Bio-analyzer (L3) -> Plot 2 (roof)
+
+Resistance batch, integer 1-9
+
+The batch number distinguishes assignments.\allowbreak{} There is no infectious-agent simulation, measured resistance curve, or actual laboratory manipulation.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Classify visible plant-damage severity in a vetted image dataset with blinded treatment labels.\allowbreak{} Store dataset item, scoring scale version, replicate, and confidence.\allowbreak{}
+
+Use a researcher-defined severity rubric and reference examples.\allowbreak{} Separate plant damage from image artifacts; aggregate only comparable stages and cultivars.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Destroy Containment and its same-floor backup, then confirm the other-floor replacement retains the same capability and stage.\allowbreak{} Check that resistance batch remains unchanged after rerouting.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{03.\allowbreak{} Light spectrum optimization}
+\subsection{Implemented route and parameter}
+Seed bank (B1) -> Spectrograph (L2) -> Infrared scanner (L3) -> Plot 3 (roof)
+
+Photoperiod, integer 8-18 hours
+
+Three pre-plot stations create a longer route.\allowbreak{} The number of hours is descriptive, not elapsed game time or a measured spectrum.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Mark leaf boundaries or estimate leaf area in calibrated images from controlled light treatments.\allowbreak{} Record calibration, illumination condition, image timestamp, and segmentation.\allowbreak{}
+
+Require scale calibration and repeated annotation.\allowbreak{} Do not infer spectral response from the avatar visiting an instrument.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Verify all four route stages and the nominal 105-point clean escort.\allowbreak{} Destroy the middle instrument after seed collection; the carrier must retain its seedling and resume without collecting a second one.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{04.\allowbreak{} Soil bioremediation}
+\subsection{Implemented route and parameter}
+Chemical seedlings (B1) -> Root analyzer (L2) -> Plot 4 (roof)
+
+Soil batch, integer 1-12
+
+The workflow represents sample tracking.\allowbreak{} It does not calculate contaminant concentration, uptake, removal efficiency, or environmental safety.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Trace roots in real scan images or match samples to verified metadata.\allowbreak{} Record source sample, imaging method, root mask, and uncertain regions.\allowbreak{}
+
+Use expert review for ambiguous roots and preserve units/\allowbreak{}calibration.\allowbreak{} A gameplay completion cannot certify remediation success.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Verify replacement Root analyzer selection, plot capacity, and no stage advancement while the target is destroyed.\allowbreak{} Confirm batch metadata remains associated with the assignment.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{05.\allowbreak{} Hydroponic versus soil}
+\subsection{Implemented route and parameter}
+Split-root tray (L1) -> Centrifuge (L3) -> Root analyzer (L2) -> Plot 5 (roof)
+
+Nutrient batch, integer 1-8
+
+The route deliberately goes up and then down before the roof.\allowbreak{} No paired root-growth measurements currently exist.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Compare paired, anonymized root images from controlled growth conditions.\allowbreak{} Store pair ID, condition metadata held separately, root-length annotation, and replicate.\allowbreak{}
+
+Randomize presentation order and require comparable imaging scales.\allowbreak{} Analyze pairs rather than treating unrelated plants as matched samples.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Exercise both ascent and descent, a destroyed Centrifuge, and a destroyed Root analyzer.\allowbreak{} Check that the route order is preserved and the two instruments are not treated as interchangeable.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{06.\allowbreak{} UV adaptation}
+\subsection{Implemented route and parameter}
+UV chamber (L2) -> Vitality scanner (L1) -> Plot 6 (roof)
+
+Exposure, integer 5-20 seconds
+
+The assignment text describes exposure; processing is still the common four-second gameplay action and does not implement the chosen duration.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Annotate visible stress features in a curated before/\allowbreak{}after plant image pair.\allowbreak{} Record acquisition conditions, treatment metadata, severity features, and uncertainty.\allowbreak{}
+
+Use researcher-approved image data and a fixed rubric.\allowbreak{} This game is not an instruction for operating UV equipment.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Check descending travel after the UV stage, stable variant display, and shared use of Vitality scanner capability with scenarios 10 and 6 without crossing assignment ownership.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{07.\allowbreak{} Gravitropism assay}
+\subsection{Implemented route and parameter}
+Clinostat (B1) -> Orientation scanner (L1) -> Plot 7 (roof)
+
+Tray tilt, integer 10-80 degrees
+
+The scenario names an orientation experiment but does not currently simulate root curvature from gravity or time.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Mark root tips and growth angles in time-lapse frames with a known reference axis.\allowbreak{} Store frame time, axis calibration, landmarks, and annotation quality.\allowbreak{}
+
+Require consistent angle conventions and reject occluded frames.\allowbreak{} Separate tray orientation from measured root direction.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Verify Clinostat backups, floor-label conversion for basement, and a clear initial rendezvous.\allowbreak{} Test the zero-length initial-path case that previously required an explicit bypass.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{08.\allowbreak{} Drought resistance}
+\subsection{Implemented route and parameter}
+Climate chamber (L3) -> Porometer (L2) -> Plot 8 (roof)
+
+Humidity, integer 20-45 percent
+
+The mission says simulated stomatal response, but it does not compute conductance or water potential.\allowbreak{} Humidity is assignment metadata.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Annotate stomatal aperture from suitable microscopy images or organize verified instrument observations.\allowbreak{} Store image/\allowbreak{}instrument record ID, scale, treatment, aperture annotation, and replicate.\allowbreak{}
+
+Require a defined measurement method and expert validation.\allowbreak{} Do not combine incompatible instruments or units under one generic score.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Destroy the Porometer while the carrier is processing; verify that processing restarts at an equivalent rather than completing on the destroyed station.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{09.\allowbreak{} Microbiome symbiosis}
+\subsection{Implemented route and parameter}
+Wet lab (B1) -> Symbiosis incubator (L2) -> Plot 9 (roof)
+
+Inoculum batch, integer 1-8
+
+The batch labels a transport protocol.\allowbreak{} No microbial growth model, sequencing data, or biological assay is present.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Label root colonization regions in an approved microscopy dataset.\allowbreak{} Store image ID, region mask, labeling taxonomy, batch, and replicate.\allowbreak{}
+
+Use blinded examples, inter-annotator agreement, and expert adjudication.\allowbreak{} Treat uncertain regions as uncertain rather than forcing a positive classification.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Verify the carrier spawns near the selected role, explains the assignment, waits for Ready, and retains the inoculum batch through same-floor and other-floor reroutes.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+
+\section{10.\allowbreak{} Cold-hardiness screening}
+\subsection{Implemented route and parameter}
+Cryo-freezer (B1) -> Vitality scanner (L1) -> Plot 10 (roof)
+
+Recovery temperature, integer 5-20 C
+
+The workflow models recovery transport.\allowbreak{} It does not simulate freezing injury or measure actual survival.\allowbreak{}
+
+\subsection{Future scientific-purpose implementation}
+Score recovery features in a time series with known treatment conditions.\allowbreak{} Store plant ID, time since recovery, visible features, viability rubric, and observer confidence.\allowbreak{}
+
+Require consistent follow-up timing and a definition of survival.\allowbreak{} Separate missing observations from dead plants.\allowbreak{}
+
+\subsection{Engineering change and acceptance}
+Check cryo-freezer explosion handling, a full Plot 10 falling back to another healthy greenhouse plot, and no reward if the assigned carrier is intercepted before final planting.\allowbreak{}
+
+Implementation touchpoints: GWAPScenarios defines title/\allowbreak{}purpose/\allowbreak{}route/\allowbreak{}range; GWAPWorld and GWAPRouting provide named capabilities and approaches; GWAPServer executes the stages and awards; LabHUD presents the assignment.\allowbreak{} A real data layer must add structured records independently of this route.\allowbreak{} Keep a stable scenario ID and protocol version so saved or exported observations do not change meaning when the list is reordered.\allowbreak{}
+

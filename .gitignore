@@ -1,0 +1,19 @@
+# LaTeX build artefacts
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+compile-pass*.txt
+compile-status.txt
+build_v5.*
+
+# Large mesh exports: GitHub rejects any file over 100 MB.
+# obj.obj alone is 194 MB. Use the glTF in export/ instead.
+*.obj
+*.mtl
+
+__pycache__/
+*.pyc

@@ -1,0 +1,288 @@
+\chapter{Subsystem-by-subsystem future update playbook}
+\section{LabKinds: Equipment catalog}
+Authoritative source: S05 /\allowbreak{} ReplicatedStorage.\allowbreak{}LabKinds
+
+See complete listing on page \pageref{src:S05}.
+
+\subsection{Proposed implementation}
+Add one Kind with inputs, outputs, wait duration, and display text.\allowbreak{} Keep simulation values explicit.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LabEquipment consumption and treatment paths; generator Kind attributes.\allowbreak{}
+
+\subsection{Acceptance cases}
+Unknown Kind, missing input, invalid output, full destination, and a complete valid cycle.\allowbreak{}
+
+\section{LabEquipment: Equipment engine}
+Authoritative source: S11 /\allowbreak{} ServerScriptService.\allowbreak{}LabEquipment
+
+See complete listing on page \pageref{src:S11}.
+
+\subsection{Proposed implementation}
+Extract inventory transactions before touching hazards or NPC motion.\allowbreak{} Preserve reservations and post-yield validation.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LabRoles assignments, LabQuizClient, tagged geometry, server hit bridge.\allowbreak{}
+
+\subsection{Acceptance cases}
+Concurrent pickup/\allowbreak{}drop, repair during failure tick, dead player, destroyed target, canceled quiz.\allowbreak{}
+
+\section{LabRoles: Roles and outfits}
+Authoritative source: S12 /\allowbreak{} ServerScriptService.\allowbreak{}LabRoles
+
+See complete listing on page \pageref{src:S12}.
+
+\subsection{Proposed implementation}
+Keep exactly two roles unless commissioned otherwise; centralize role-to-outfit and permission mapping.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+GWAPServer LabRole observer and original equipment role checks.\allowbreak{}
+
+\subsection{Acceptance cases}
+Both kiosks, respawn, role change during mission, and accessory/\allowbreak{}rig variations.\allowbreak{}
+
+\section{LabRound: Round lifecycle}
+Authoritative source: S13 /\allowbreak{} ServerScriptService.\allowbreak{}LabRound
+
+See complete listing on page \pageref{src:S13}.
+
+\subsection{Proposed implementation}
+Make reset ordering explicit with one round transition contract and subsystem callbacks.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Points, fractional debt, carrier termination, research repair, plot clearing.\allowbreak{}
+
+\subsection{Acceptance cases}
+Join during break, end during processing, disconnected winner, and reset after destruction.\allowbreak{}
+
+\section{LabTechnicians: Legacy worker service}
+Authoritative source: S14 /\allowbreak{} ServerScriptService.\allowbreak{}LabTechnicians
+
+See complete listing on page \pageref{src:S14}.
+
+\subsection{Proposed implementation}
+Check which templates actually have Humanoids before extending its path loop.\allowbreak{} Avoid competing with LabEquipment worker motion.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LabWorkerBot tags and template structure.\allowbreak{}
+
+\subsection{Acceptance cases}
+No double movement, no idle thread leak, valid target assignment, and bounded retry.\allowbreak{}
+
+\section{LabElevators: Elevator compatibility script}
+Authoritative source: S10 /\allowbreak{} ServerScriptService.\allowbreak{}LabElevators
+
+See complete listing on page \pageref{src:S10}.
+
+\subsection{Proposed implementation}
+Treat as dormant unless real tagged elevator geometry exists.\allowbreak{} Do not claim elevator transport from script presence alone.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Level metadata and any future lift models.\allowbreak{}
+
+\subsection{Acceptance cases}
+Door interlock, floor alignment, queueing, interrupted travel, and stair fallback.\allowbreak{}
+
+\section{LoungeSystems: Lounge server behavior}
+Authoritative source: S15 /\allowbreak{} ServerScriptService.\allowbreak{}LoungeSystems
+
+See complete listing on page \pageref{src:S15}.
+
+\subsection{Proposed implementation}
+Keep lounge interactions isolated from laboratory scoring and navigation.\allowbreak{} Profile actual cost before deleting scenery.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LoungeClient and generated lounge objects.\allowbreak{}
+
+\subsection{Acceptance cases}
+Missing lounge, occupied seat, interaction range, and cleanup on departure.\allowbreak{}
+
+\section{LoungeClient: Lounge presentation}
+Authoritative source: S28 /\allowbreak{} StarterPlayer.\allowbreak{}StarterPlayerScripts.\allowbreak{}LoungeClient
+
+See complete listing on page \pageref{src:S28}.
+
+\subsection{Proposed implementation}
+Add local effects through lifecycle-managed connections and restore prior camera/\allowbreak{}UI state on exit.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LoungeSystems and player character lifecycle.\allowbreak{}
+
+\subsection{Acceptance cases}
+Enter/\allowbreak{}exit, respawn inside, missing props, and device input.\allowbreak{}
+
+\section{LabQuizClient: Quiz UI}
+Authoritative source: S26 /\allowbreak{} StarterPlayer.\allowbreak{}StarterPlayerScripts.\allowbreak{}LabQuizClient
+
+See complete listing on page \pageref{src:S26}.
+
+\subsection{Proposed implementation}
+Use an accessible modal with touch and keyboard choices and a clear timeout.\allowbreak{} Display server challenge data only.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+LabEquipment pendingQuizzes and MathQuizActive.\allowbreak{}
+
+\subsection{Acceptance cases}
+Wrong/\allowbreak{}late/\allowbreak{}replayed reply, cancel, death, target destruction, and overlap with GWAP HUD.\allowbreak{}
+
+\section{LabSidearmClient: Tool bootstrap}
+Authoritative source: S27 /\allowbreak{} StarterPlayer.\allowbreak{}StarterPlayerScripts.\allowbreak{}LabSidearmClient
+
+See complete listing on page \pageref{src:S27}.
+
+\subsection{Proposed implementation}
+Keep one controller instance per equipped original Tool and one active camera owner.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+BlasterController AutoBind/\allowbreak{}Enable/\allowbreak{}Disable.\allowbreak{}
+
+\subsection{Acceptance cases}
+Rapid equip, respawn, backpack replacement, duplicate script prevention.\allowbreak{}
+
+\section{Blaster: Shared casting}
+Authoritative source: S06 /\allowbreak{} ReplicatedStorage.\allowbreak{}Modules.\allowbreak{}Blaster
+
+See complete listing on page \pageref{src:S06}.
+
+\subsection{Proposed implementation}
+Preserve desktop screen conversion and mobile camera-forward behavior as separate tested paths.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Controller reticle and server manager raycasts.\allowbreak{}
+
+\subsection{Acceptance cases}
+Mouse edges, asymmetric safe areas, near wall, long range, and invalid vectors.\allowbreak{}
+
+\section{BlasterController: Input/\allowbreak{}camera/\allowbreak{}pose}
+Authoritative source: S07 /\allowbreak{} ReplicatedStorage.\allowbreak{}Modules.\allowbreak{}BlasterController
+
+See complete listing on page \pageref{src:S07}.
+
+\subsection{Proposed implementation}
+Fix one measured fault at a time; retain cached base transforms and deterministic update ownership.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Shared casting, Tool grip metadata, HUD rectangles, rig joints.\allowbreak{}
+
+\subsection{Acceptance cases}
+Idle/\allowbreak{}walk/\allowbreak{}recoil, mouse pitch/\allowbreak{}yaw, mobile swipe, hybrid input, ADS restore, GUI click suppression.\allowbreak{}
+
+\section{ServerBlasterManager: Authoritative shooting}
+Authoritative source: S16 /\allowbreak{} ServerScriptService.\allowbreak{}ServerBlasterManager
+
+See complete listing on page \pageref{src:S16}.
+
+\subsection{Proposed implementation}
+Add weapon configuration only through validated server-side attributes; keep sequence and rate limits.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Blaster configuration, GWAPHitBridge, legacy impact bridge.\allowbreak{}
+
+\subsection{Acceptance cases}
+Spoofed tool, out-of-order packet, impossible camera origin, wall obstruction, and correct target damage.\allowbreak{}
+
+\section{GWAPWorld: Research geometry}
+Authoritative source: S04 /\allowbreak{} ReplicatedStorage.\allowbreak{}GWAPWorld
+
+See complete listing on page \pageref{src:S04}.
+
+\subsection{Proposed implementation}
+Use the captured active module, not the loose mislabeled file.\allowbreak{} Convert construction to a versioned local frame.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+GWAPRouting, mission approaches, roof stair geometry.\allowbreak{}
+
+\subsection{Acceptance cases}
+Build twice without duplicates, translated/\allowbreak{}rotated building, all approach points, roof opening.\allowbreak{}
+
+\section{GWAPScenarios: Scenario data}
+Authoritative source: S03 /\allowbreak{} ReplicatedStorage.\allowbreak{}GWAPScenarios
+
+See complete listing on page \pageref{src:S03}.
+
+\subsection{Proposed implementation}
+Give each scenario a stable ID and protocol version; decouple plot selection from array position.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Server index validation, HUD job cards, station capabilities.\allowbreak{}
+
+\subsection{Acceptance cases}
+Missing capability, invalid range, new eleventh entry, and unchanged old scenario IDs.\allowbreak{}
+
+\section{GWAPNPC: Carrier appearance and gait}
+Authoritative source: S01 /\allowbreak{} ReplicatedStorage.\allowbreak{}GWAPNPC
+
+See complete listing on page \pageref{src:S01}.
+
+\subsection{Proposed implementation}
+Separate immutable template pose from animation state; preserve same-inventory gun models.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+GWAPServer template selection and movement ownership.\allowbreak{}
+
+\subsection{Acceptance cases}
+Boys/\allowbreak{}girls, held seedling, gun pose, idle reset, teleport reset, pooled reactivation.\allowbreak{}
+
+\section{GWAPRouting: Equivalent selection}
+Authoritative source: S02 /\allowbreak{} ReplicatedStorage.\allowbreak{}GWAPRouting
+
+See complete listing on page \pageref{src:S02}.
+
+\subsection{Proposed implementation}
+Add reachability and operational-state adapters after fixing coordinates.\allowbreak{} Use stable IDs and deterministic tie breaking.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+World station registry, destruction state, capacity.\allowbreak{}
+
+\subsection{Acceptance cases}
+Same floor preferred, other floor fallback, all unavailable, full plots, removed fixture.\allowbreak{}
+
+\section{GWAPServer: Mission orchestration}
+Authoritative source: S08 /\allowbreak{} ServerScriptService.\allowbreak{}GWAPServer
+
+See complete listing on page \pageref{src:S08}.
+
+\subsection{Proposed implementation}
+Extract mission state/\allowbreak{}reward transactions without changing existing role meanings.\allowbreak{} Introduce route revision cancellation consistently.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+All GWAP modules, LabRoles, Points, LabRound.\allowbreak{}
+
+\subsection{Acceptance cases}
+Concurrent players, damage during processing, repeated replies, respawn, departure, and terminal reward idempotence.\allowbreak{}
+
+\section{GWAPWallDamage: Wall fixture lifecycle}
+Authoritative source: S09 /\allowbreak{} ServerScriptService.\allowbreak{}GWAPWallDamage
+
+See complete listing on page \pageref{src:S09}.
+
+\subsection{Proposed implementation}
+Replace name-pattern coupling with explicit wall/\allowbreak{}fixture association when geometry is refactored.\allowbreak{} Define restoration.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+Legacy gas detonation, research stations, prompts and tags.\allowbreak{}
+
+\subsection{Acceptance cases}
+Near/\allowbreak{}outside fixture, rotated wall, two blasts, round reset, old callback after quarantine.\allowbreak{}
+
+\section{LabHUD: Grouped mission display}
+Authoritative source: S25 /\allowbreak{} StarterPlayer.\allowbreak{}StarterPlayerScripts.\allowbreak{}LabHUD
+
+See complete listing on page \pageref{src:S25}.
+
+\subsection{Proposed implementation}
+Centralize notice priority and reserved screen regions.\allowbreak{} Preserve original backpack and combat controls.\allowbreak{}
+
+\subsection{Dependencies to preserve}
+GWAP attributes, original notices, quiz modal, joystick/\allowbreak{}jump bounds.\allowbreak{}
+
+\subsection{Acceptance cases}
+Small portrait/\allowbreak{}landscape, long text, two-digit stages, chat open, quiz open, and keyboard/\allowbreak{}gamepad focus.\allowbreak{}
+
+\section{Cross-cutting data, assets, and deployment}
+For persistent data, introduce a versioned server-owned schema and migrations before saving attributes.\allowbreak{} For assets, maintain IDs, provenance, scale, orientation, and fallback behavior; a visual replacement must not change a muzzle convention silently.\allowbreak{} For deployment, compare installed hashes against the chosen baseline, save/\allowbreak{}reopen, test the persistent place, and retain a rollback artifact.\allowbreak{} The geometry export cannot restore these contracts on its own.\allowbreak{}
+
+\section{Complete proposed coordinate-frame module}
+The following module is a reference implementation, not installed or runtime-tested.\allowbreak{} It requires a deliberately placed NavigationOrigin and ApproachPoint attachments.\allowbreak{} It does not discover a valid origin automatically, reconstruct stairs, or replace pathfinding.\allowbreak{} Its edgeClear helper is a single swept query, not a complete navigator and not a test for initial overlap.\allowbreak{} Integrate it only after defining these scene objects and testing the contract.\allowbreak{}
+
+\VerbatimInput[fontsize=\footnotesize,breaklines=true,breakanywhere=true,numbers=left,numbersep=6pt,tabsize=4]{proposed/WorldFrame.lua}

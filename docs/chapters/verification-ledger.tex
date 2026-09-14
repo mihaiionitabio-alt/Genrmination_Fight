@@ -1,0 +1,150 @@
+\chapter{Verification ledger and future acceptance suite}
+\section{P01: Role selection and nearby companion}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Approximately eight studs from player; one visible carrier and four pooled.\allowbreak{}
+
+Limit: Historical observation, not rerun for current geometry.\allowbreak{}
+
+\section{P02: Wait and Regroup}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Wait movement zero; regroup returned within roughly eight studs.\allowbreak{}
+
+Limit: No stress test of every blocked spawn candidate.\allowbreak{}
+
+\section{P03: Original rifle and equipment destruction}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Lab Rifle destroyed a research machine; nearby explosion destroyed another; R repair restored it.\allowbreak{}
+
+Limit: Does not certify wall-fixture restoration or every blast chain.\allowbreak{}
+
+\section{P04: Equivalent rerouting}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Incubator -> same-floor Backup 1 -> other-floor Backup 2; assignment stayed RUNNING.\allowbreak{}
+
+Limit: Earlier coordinate frame; current C01 requires rerun.\allowbreak{}
+
+\section{P05: Carrier gait and speed}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: WalkSpeed 20; roughly 28.\allowbreak{}7 studs of travel during sampled interval; leg swing about 24 degrees.\allowbreak{}
+
+Limit: Kinematic gait, not Humanoid physics certification.\allowbreak{}
+
+\section{P06: Wall-fixture cleanup}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Four fixture types within a temporary wall section removed; outside health station preserved.\allowbreak{}
+
+Limit: Controlled isolated test, not whole-floor blast profiling.\allowbreak{}
+
+\section{P07: Small mobile layout}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: 705x338 viewport; panel bottom y=179, joystick top y=187.\allowbreak{}
+
+Limit: Eight-pixel gap in this configuration only.\allowbreak{}
+
+\section{P08: Idle weapon stabilization}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: 90 frames with zero Grip motion and zero shoulder-animation translation.\allowbreak{}
+
+Limit: One tested original rifle/\allowbreak{}rig configuration.\allowbreak{}
+
+\section{P09: Walking stabilization}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Approximately 19 studs of walking with zero Grip motion.\allowbreak{}
+
+Limit: Intentional recoil while firing was not removed.\allowbreak{}
+
+\section{P10: Interception score}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: Assigned carrier awarded 50 once; repeat damage did not add points.\allowbreak{}
+
+Limit: Multi-client race conditions not exhaustively tested.\allowbreak{}
+
+\section{P11: Solo score loss}
+Evidence period: Prior GWAP turn
+
+Observed/\allowbreak{}reported result: 100 points became 99 on a successful NPC hit.\allowbreak{}
+
+Limit: Low-score fractional policy also inspected in code; no long statistical run.\allowbreak{}
+
+\section{P12: Rooftop mission completion}
+Evidence period: Earlier GWAP turn
+
+Observed/\allowbreak{}reported result: Seed source -> instrument -> roof completed and one plant appeared.\allowbreak{}
+
+Limit: Test used helper following; friendly fire disqualified final escort reward, so clean full reward was not proven.\allowbreak{}
+
+\section{P13: Player shooting validation}
+Evidence period: Shared chat
+
+Observed/\allowbreak{}reported result: Reported 10 damage, wall blocking, and rejection of distant forged camera origin.\allowbreak{}
+
+Limit: Historical report; not a new penetration/\allowbreak{}security audit.\allowbreak{}
+
+\section{P14: ADS and device controls}
+Evidence period: Shared chat
+
+Observed/\allowbreak{}reported result: Reported FOV 70->55 and sensitivity 1->0.\allowbreak{}62, restored on exit; phone/\allowbreak{}tablet controls checked.\allowbreak{}
+
+Limit: Some later control changes superseded these exact UI versions.\allowbreak{}
+
+\section{P15: Basement and quiz/\allowbreak{}window interactions}
+Evidence period: Shared chat
+
+Observed/\allowbreak{}reported result: Vent landing, pickup quiz, and breakable window passed reported checks.\allowbreak{}
+
+Limit: No new Play session in this edition.\allowbreak{}
+
+\section{D01: Live source completeness}
+Evidence period: This edition
+
+Observed/\allowbreak{}reported result: 29 source containers captured; every UTF-8 byte length matched Studio inventory.\allowbreak{}
+
+Limit: Static capture only; active count 20, archive 8, disabled generator 1.\allowbreak{}
+
+\section{D02: Scene/\allowbreak{}source audit}
+Evidence period: This edition
+
+Observed/\allowbreak{}reported result: 67 research station records; place version 70; C01 and C02 identified.\allowbreak{}
+
+Limit: No claim that current routing is playable.\allowbreak{}
+
+\section{Proposed new regression sequence}
+\subsection{Baseline}
+Open a copied saved place, identify the place/\allowbreak{}version, compare active-source hashes, and ensure there is only one bootstrap/\allowbreak{}controller authority.\allowbreak{}
+
+\subsection{Coordinate frame}
+Translate and rotate a test laboratory with its navigation origin; verify every station approach stays in its intended corridor and each stair edge is clear.\allowbreak{} Include the current displaced scene as a regression fixture.\allowbreak{}
+
+\subsection{Transactions}
+Two clients compete for the same plant and destination slot.\allowbreak{} Exactly one transfer commits; the other gets a clear reason.\allowbreak{} Repeat with a quiz outstanding, a full cabinet, and a destroyed destination.\allowbreak{}
+
+\subsection{Carrier lifecycle}
+Choose, Ready, Wait, Status, Regroup, respawn, disconnect, change role, and end the round during travel and processing.\allowbreak{} No duplicate carrier, seedling, or reward remains.\allowbreak{}
+
+\subsection{Destruction}
+Bullet-hit research station, chain blast, wall-section removal, outside-fixture preservation, repair, all-equivalents unavailable, and round reset after quarantine.\allowbreak{}
+
+\subsection{Input preservation}
+Desktop mouse target at all screen edges; mobile forward ray; right-swipe camera with left movement; ADS on/\allowbreak{}off; equip/\allowbreak{}unequip; idle/\allowbreak{}walk gun stability; UI click does not fire.\allowbreak{}
+
+\subsection{Responsive layout}
+Small phone portrait and landscape, tablet, desktop, chat open, quiz open, inventory open.\allowbreak{} Record rectangle intersections for mission, joystick, jump, fire, aim, and prompts.\allowbreak{}
+
+\subsection{Scoring}
+Clean 90/\allowbreak{}105-point escort as applicable, one 50-point interception, friendly-fire disqualification, low-score fractional loss, reset debt, and multiplayer solo-fire exclusion.\allowbreak{}
+
+\subsection{Performance}
+Profile crowded rooms and multi-client play; report hardware, viewport, scene population, average/\allowbreak{}p95 frame time, server heartbeat cost, and replication load.\allowbreak{} Do not extrapolate a one-client test to 60 players.\allowbreak{}
+
+These are proposed tests.\allowbreak{} They were not executed while producing this document.\allowbreak{} The verification report for this edition concerns source capture, document compilation, page rendering, and manifest completeness.\allowbreak{}
+
