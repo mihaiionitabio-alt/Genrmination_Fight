@@ -145,6 +145,32 @@ More photographs, the full design record and ten tactics worth knowing are in
 | Gas lines | 18 |
 | Round length | 480 seconds |
 
+## Updating this repository after a change in Studio
+
+Scripts need no export. Studio cannot write files, but it can make HTTP
+requests, so the sync runs the other way round — a local server listens and
+Studio pushes to it.
+
+```powershell
+python tools/studio_sync_server.py     # 1. start the receiver
+                                       # 2. run tools/capture.lua in Studio (Edit mode)
+.\tools\push-update.ps1 "what changed"  # 3. review the diff, then push
+```
+
+`capture.lua` walks ReplicatedStorage, ServerScriptService, ServerStorage,
+StarterPlayer, StarterGui, StarterPack and Workspace and posts the source of
+every script into `src/`. It only reads, and it restores
+`HttpService.HttpEnabled` to its previous value when it finishes. Rollback
+snapshots and retired modules — anything named `Before…`, `_RETIRED` or
+`_DISABLED` — are skipped, because they are history rather than source.
+
+Only the geometry needs a manual step, and rarely: **File → Export Selection…**
+as `.gltf` over `export/Export.gltf`. The world is generated, so
+`generator/SeedLabGenerator.lua` is its real source.
+
+Full instructions, including the documentation rebuild, are in
+[`tools/README.md`](tools/README.md).
+
 ## Rebuilding the world
 
 `SeedLabGenerator.lua` is authoring-time only. Run it in Studio in **Edit** mode:
