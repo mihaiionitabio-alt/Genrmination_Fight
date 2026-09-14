@@ -1,0 +1,19 @@
+# Normalise line endings in the repository to LF, whatever Windows checks out.
+# Without this, Git's autocrlf makes every text file look modified after a
+# checkout, and a sync diff shows hundreds of thousands of phantom changes.
+* text=auto eol=lf
+
+# Luau and LaTeX are LF; the PowerShell helper is CRLF so it runs cleanly.
+*.lua   text eol=lf
+*.tex   text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+*.sh    text eol=lf
+*.ps1   text eol=crlf
+
+# Never diff or convert these.
+*.png   binary
+*.pdf   binary
+*.gltf  binary
+*.obj   binary
+*.mtl   binary
